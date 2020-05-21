@@ -36,7 +36,7 @@ class Searchitems extends Component {
             itemData: new CustomStore({
                 key: 'id',
                 load: () => {
-                    return fetch(`/api/items`)
+                    return fetch(`${URL}/items`)
                         .then(handleErrors)
                         .then(response => response.json())
                         .catch(() => { throw 'Network error' })

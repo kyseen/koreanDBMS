@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const functions = require('firebase-functions')
 const path = require('path');
 const cors = require('cors');
 
@@ -17,7 +18,7 @@ const db = require('./config/keys').mongoURI;
 
 mongoose.connect(db)
     .then(() => console.log('MongoDB Connected...'))
-    .catch(() => console.log(err));
+    .catch((err) => console.log(err));
 
 // Use Routes
 
@@ -27,15 +28,13 @@ app.use('/api/items', items);
 app.use('/api/tracking', trackingcompany);
 app.use('/api/list', shippinglist);
 
-if(process.env.NODE_ENV === 'production'){
-    app.use(express.static('client/build'));
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static( 'client/build' ));
 
     app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
-
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     });
 }
-
 
 const port = process.env.PORT || 3000;
 
