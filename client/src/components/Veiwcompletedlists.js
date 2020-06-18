@@ -18,7 +18,7 @@ import DataGrid, {
 import CustomStore from "devextreme/data/custom_store";
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.material.blue.light.css';
-const URL = 'http://localhost:3000/api';
+const URL = 'https://us-central1-korean-export-dbms.cloudfunctions.net/app';
 
 function handleErrors(response) {
    if (!response.ok) {
@@ -74,13 +74,13 @@ class Viewcompletedlists extends Component {
             key: 'id',
             loadMode: 'raw',
             load: () => {
-               return fetch(`${URL}/list/completed`)
+               return fetch(`${URL}/api/list/completed`)
                   .then(handleErrors)
                   .then(response => response.json())
                   .catch(() => { throw 'Network error' })
             },
             update: (key, values) => {
-               return fetch(`${URL}/list/update/${key}`, {
+               return fetch(`${URL}/api/list/update/${key}`, {
                   method: "PUT",
                   body: JSON.stringify(values),
                   headers: {
@@ -93,7 +93,7 @@ class Viewcompletedlists extends Component {
             key: '_id',
             loadMode: 'raw',
             load: () => {
-               return fetch(`${URL}/tracking`)
+               return fetch(`${URL}/api/tracking`)
                   .then(handleErrors)
                   .then(response => response.json())
                   .catch(() => { throw 'Network error' })

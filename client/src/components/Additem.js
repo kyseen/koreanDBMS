@@ -4,6 +4,7 @@ import React, { useState, Component } from 'react';
 import Logout from './Logout';
 import notify from 'devextreme/ui/notify';
 const axios = require('axios');
+const URL = 'https://us-central1-korean-export-dbms.cloudfunctions.net/app/api'
 
 function Additem() {
 
@@ -20,8 +21,7 @@ function Additem() {
         if (barcode === '' || name === '' || price === '' || weight === '') {
             notify('Could not add items to database', "error");
         } else {
-
-            axios.post('http://localhost:3000/items/additem', {
+            axios.post(`${URL}/items/additem`, {
                 barcode, name, price, weight, description
             })
                 .catch(err => notify("Item could not be added!", "error"))
@@ -33,7 +33,6 @@ function Additem() {
             setWeight('')
             setDesc('')
         }
-
     }
 
     function handleDone(event) {
@@ -59,12 +58,12 @@ function Additem() {
                 <div className='gen-text'>
                     Price (in $):
                    <input className='text-input' id='add-price' type='number' value={price}
-                        onChange={e => setPrice(e.target.value)} placeholder='must enter'></input>
+                        onChange={e => setPrice(e.target.value)} placeholder='optional'></input>
                 </div>
                 <div className='gen-text'>
                     Weight (in kg):
                    <input className='text-input' id='add-weight' type='number' value={weight}
-                        onChange={e => setWeight(e.target.value)} placeholder='must enter'></input>
+                        onChange={e => setWeight(e.target.value)} placeholder='optional'></input>
                 </div>
                 <div className='gen-text'>
                     Description:

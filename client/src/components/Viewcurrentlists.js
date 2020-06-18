@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import notify from 'devextreme/ui/notify';
+import Moment from 'react-moment';
 import DataGrid, {
     Column,
     Pager,
@@ -23,7 +24,8 @@ import { Item } from 'devextreme-react/form';
 import CustomStore from "devextreme/data/custom_store";
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.material.blue.light.css';
-const URL = 'http://localhost:3000/api';
+const URL = 'https://us-central1-korean-export-dbms.cloudfunctions.net/app';
+
 
 function handleErrors(response) {
     if (!response.ok) {
@@ -74,7 +76,7 @@ const company = new CustomStore({
     key: '_id',
     loadMode: 'raw',
     load: () => {
-        return fetch(`${URL}/tracking`)
+        return fetch(`${URL}/api/tracking`)
             .then(handleErrors)
             .then(response => response.json())
             .catch((err) => { throw 'Network error' })
@@ -89,19 +91,25 @@ class Viewcurrentlists extends Component {
                 key: 'id',
                 loadMode: 'raw',
                 load: () => {
-                    return fetch(`${URL}/list`)
+                    return fetch(`${URL}/api/list`)
                         .then(handleErrors)
                         .then(response => response.json())
                         .catch(() => { throw 'Network error' })
                 },
                 update: (key, values) => {
-                    return fetch(`${URL}/list/update/${key}`, {
+                    return fetch(`${URL}/api/list/update/${key}`, {
                         method: "PUT",
                         body: JSON.stringify(values),
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     }).then(handleErrors);
+                },
+                remove: (key) => {
+                    return fetch(`${URL}/api/list/delete/${key}`, {
+                        method: "DELETE"
+                    }
+                    )
                 }
             }),
             refreshMode: 'full'
@@ -121,6 +129,17 @@ class Viewcurrentlists extends Component {
             );
     }
     print = (props) => {
+        this.props.history.push({
+            pathname: `/list/print/${props.row.data.id}`,
+            data: props.row.data
+        })
+    }
+
+    edit = (props) => {
+        this.props.history.push({
+            pathname: `/list/edit/${props.row.data.id}`,
+            data: props.row.data
+        })
     }
 
 
@@ -140,6 +159,7 @@ class Viewcurrentlists extends Component {
                     showBorders={true}>
                     <Editing
                         mode="popup"
+                        allowDeleting={true}
                         allowUpdating={true}
                         refreshMode={refreshMode}>
                         <Popup title="Shipping List Edit" showTitle={true} width={600} height={600}>
@@ -152,6 +172,7 @@ class Viewcurrentlists extends Component {
                             <Item dataField="shippingDate" />
                             <Item dataField="trackingCompany" />
                             <Item dataField="trackingNumber" />
+                            <Item dataField="shippingWeight" />
                             <Item dataField="complete" />
                         </Form>
                     </Editing>
@@ -186,7 +207,7 @@ class Viewcurrentlists extends Component {
                         dataType="number"
                         caption="Total Price ($)"
                         format={{ type: 'currency', precision: 2 }} />
-                    <Column dataField="totalweight"
+                    <Column dataField="shippingWeight"
                         dataType="number"
                         caption="Total Weight (kg)" />
                     <Column dataField="trackingCompany" caption="TrackingCompany">
@@ -204,6 +225,9 @@ class Viewcurrentlists extends Component {
                             onClick={this.trackingwebsite} />
                         <Button text="P"
                             onClick={this.print} />
+                        <Button text="E"
+                            onClick={this.edit} />
+                        <Button name="delete" />
                     </Column>
                 </DataGrid>
             </React.Fragment>

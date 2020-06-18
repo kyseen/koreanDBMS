@@ -21,10 +21,11 @@ import { Item } from 'devextreme-react/form';
 import CustomStore from "devextreme/data/custom_store";
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.material.blue.light.css';
+import notify from 'devextreme/ui/notify';
 
 const axios = require('axios');
 
-const URL = 'http://localhost:3000/api';
+const URL = 'https://us-central1-korean-export-dbms.cloudfunctions.net/app';
 
 function handleErrors(response) {
     if (!response.ok) {
@@ -34,20 +35,17 @@ function handleErrors(response) {
 }
 
 class Createnewlist extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             items: [],
             currentitem: [],
-            companyName: "",
-            companyAddress: "",
-            companyCity: "",
-            companyPC: "",
-            companyNumber: "",
+            companyname: "",
+            companyaddress: "",
             itemData: new CustomStore({
                 key: 'id',
                 load: () => {
-                    return fetch(`${URL}/items/available`)
+                    return fetch(`${URL}/api/items/available`)
                         .then(handleErrors)
                         .then(response => response.json())
                         .catch(() => { throw 'Network error' })
@@ -67,22 +65,34 @@ class Createnewlist extends Component {
         this.setState({ refreshMode: e.value });
     }
 
+    onChange = (e) => {
+        this.setState({ [e.target.id]: e.target.value });
+    }
+
     render() {
-        const { itemData, refreshMode, companyName, companyAddress, companyCity, companyNumber } = this.state;
+        const { itemData, refreshMode } = this.state;
+        const { companyname, address } = this.state;
         const { items } = this.state;
+
         function handleDone() {
-            console.log(items)
-            axios.post(`${URL}/list/newlist`, {
-                items
-            })
-                .then(function (response) {
-                    alert("Item Added");
-                    console.log(response);
+            if (companyname == null || address == null || items == null) {
+                notify("Either Company Name, Address or items is null", "error")
+            }
+            else {
+                axios.post(`${URL}/api/list/newlist`, {
+                    companyname, address, items
                 })
-                .catch(function (error) {
-                    alert(error);
-                    console.log(error);
-                });
+                    .then(function (response) {
+                        notify("List Created", 'success');
+                        window.location.replace('https://korean-export-dbms.web.app/home')
+                    })
+                    .catch(function (error) {
+                        notify(error, 'error');
+                        console.log(error);
+                    });
+
+            }
+
         }
         return (
             <React.Fragment>
@@ -92,23 +102,14 @@ class Createnewlist extends Component {
                     <div className='create-form-box'>
                         <div className="dx-field">
                             <div className="dx-field-value">
-                                <TextBox
-                                    value={this.companyName}
-                                    showClearButton={true}
-                                    width="200px"
-                                    placeholder="Company Name"
-                                    alignment="left" />
+                                <label for="companyname">Company Name</label>
+                                <input type="text" value={companyname} onChange={this.onChange} class="form-control" id="companyname" placeholder="Company Name"></input>
                             </div>
                         </div>
                         <div className="dx-field">
                             <div className="dx-field-value">
-                                <TextBox
-                                    value={this.companyAddress}
-                                    showClearButton={true}
-                                    width="200px"
-                                    placeholder="Company Address"
-                                    alignment="right"
-                                />
+                                <label for="companyname">Address</label>
+                                <input type="text" value={address} onChange={this.onChange} class="form-control" id="address" placeholder="Address"></input>
                             </div>
                         </div>
                     </div>
@@ -162,10 +163,14 @@ class Createnewlist extends Component {
                                 defaultSortOrder="asc" />
                             <Column type="buttons">
                                 <Button name="edit" />
-                                <Button text="A"
-                                    onClick={handleDone} />
                             </Column>
                         </DataGrid>
+                    </div>
+                    <div>
+                        <button className='add-item-button'
+                            onClick={handleDone}>
+                            Add List
+                    </button>
                     </div>
                 </div>
             </React.Fragment >

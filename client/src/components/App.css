@@ -295,7 +295,6 @@
   
 }
 
-
 .add-item-button:hover {
   background-color: #2d89f1ec;
   transform: translate(0px, -2px);
@@ -528,8 +527,27 @@
   text-align: center!important;  
 } 
 
+.printback {
+  background-color: white;
+}
 
+.print-button {
+  height: 50px;
+  background-color: #fff;
+  color: black;
+  border: 1px solid #3f51b5;
+  font-size: 15px;
+  border: none;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.2s ease;
+  align-content: center;
+}
 
+.printme { display: none;}
+@media print { 
+    .no-printme  { display: none;}
+    .printme  { display: block;}
+}
 
 
 

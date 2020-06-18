@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import 'materialize-css/dist/css/materialize.min.css';
-
 import './App.css';
 import Logout from './Logout';
 import { useHistory } from "react-router-dom";

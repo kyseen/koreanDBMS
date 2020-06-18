@@ -20,7 +20,7 @@ import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.material.blue.light.css';
 import notify from 'devextreme/ui/notify';
 
-const URL = 'http://localhost:3000/api';
+const URL = 'https://us-central1-korean-export-dbms.cloudfunctions.net/app';
 
 function handleErrors(response) {
     if (!response.ok) {
@@ -36,13 +36,13 @@ class Searchitems extends Component {
             itemData: new CustomStore({
                 key: 'id',
                 load: () => {
-                    return fetch(`${URL}/items`)
+                    return fetch(`${URL}/api/items`)
                         .then(handleErrors)
                         .then(response => response.json())
                         .catch(() => { throw 'Network error' })
                 },
                 insert: (values) => {
-                    return fetch(`${URL}/items/additem`, {
+                    return fetch(`${URL}/api/items/additem`, {
                         method: "POST",
                         body: JSON.stringify(values),
                         headers: {
@@ -54,7 +54,7 @@ class Searchitems extends Component {
 
                 },
                 update: (key, values) => {
-                    return fetch(`${URL}/items/update/${key}`, {
+                    return fetch(`${URL}/api/items/update/${key}`, {
                         method: "PUT",
                         body: JSON.stringify(values),
                         headers: {
@@ -72,6 +72,9 @@ class Searchitems extends Component {
 
     handleDone = (e) => {
         this.props.history.push('/home');
+    }
+    handleRefresh = (e) => {
+        window.location.reload(true);
     }
 
     handleRefreshModeChange(e) {
